@@ -3,11 +3,11 @@ import path from 'path';
 
 // Configurar Google Cloud Storage
 const storage = new Storage({
-  keyFilename: 'path/to/your-service-account-file.json',
-  projectId: 'your-project-id',
+  keyFilename: __dirname + '/../config/storage-key.json',
+  projectId: process.env.PROJECT_ID,
 });
 
-const bucketName = 'your-bucket-name';
+const bucketName = 'backend_images_ia';
 const bucket = storage.bucket(bucketName);
 
 /**
@@ -18,20 +18,19 @@ const bucket = storage.bucket(bucketName);
 export const uploadImageToGoogleCloud = async (file: Express.Multer.File): Promise<string> => {
   const fileName = `${Date.now()}-${file.originalname}`;
   const blob = bucket.file(fileName);
-  const blobStream = blob.createWriteStream({
-    resumable: false,
-    contentType: file.mimetype,
-  });
 
   return new Promise((resolve, reject) => {
+    const blobStream = blob.createWriteStream({
+      resumable: false,
+      contentType: file.mimetype,
+    });
+
     blobStream
       .on('finish', () => {
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
         resolve(publicUrl);
       })
-      .on('error', (err) => {
-        reject(`Error subiendo archivo a Google Cloud: ${err.message}`);
-      })
+      .on('error', (err) => reject(`Error al subir archivo: ${err.message}`))
       .end(file.buffer);
   });
 };
