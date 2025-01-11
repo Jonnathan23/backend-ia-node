@@ -27,6 +27,7 @@ export const uploadImageToGoogleCloud = async (file: Express.Multer.File): Promi
 
     blobStream
       .on('finish', () => {
+        // Construir la URL pública directamente
         const publicUrl = `https://storage.googleapis.com/${bucketName}/${fileName}`;
         resolve(publicUrl);
       })
@@ -34,3 +35,4 @@ export const uploadImageToGoogleCloud = async (file: Express.Multer.File): Promi
       .end(file.buffer);
   });
 };
+

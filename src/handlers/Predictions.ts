@@ -45,6 +45,7 @@ export const createPrediction = async (req: Request, res: Response) => {
 
         res.status(201).json({ data: 'Se ha guardado correctamente' })
     } catch (error: any) {
+        console.log(colors.red.bold(error))
         res.status(500).json({ error: error.message })
     }
 }
