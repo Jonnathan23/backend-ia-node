@@ -3,7 +3,14 @@ import path from 'path';
 
 // Configurar Google Cloud Storage
 const storage = new Storage({
-  keyFilename: __dirname + '/../config/storage-key.json',
+  credentials: {
+    type: process.env.type || '',
+    project_id: process.env.project_id || '',
+    private_key_id: process.env.private_key_id || '',
+    private_key: (process.env.private_key || '').replace(/\\n/g, '\n'), // Escapar saltos de línea
+    client_email: process.env.client_email || '',
+    client_id: process.env.client_id || '',
+  },
   projectId: process.env.PROJECT_ID,
 });
 
